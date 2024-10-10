@@ -10,7 +10,7 @@ button {
 }
 
 button:hover {
-    background-color: RGB(160, 160, 160) ;
+    background-color: RGB(180, 200, 220) ;
  }
 
 .container {
@@ -28,6 +28,7 @@ button:hover {
     background-color:RGB(240, 240, 240);;
     font-size: xx-large;
     height: 13%;
+    flex-wrap: 0;
     justify-content: right;
     border-radius: 4px;
     align-self: last baseline;
