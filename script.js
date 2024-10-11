@@ -1,4 +1,3 @@
-
 let isDecimalPlaceAllowed;
 let isSecondOperand;
 let firstOperand;
@@ -11,12 +10,7 @@ var operatorsDiv = document.querySelector(".operators");
 var numberDiv = document.querySelector(".numbers");
 
 document.addEventListener("keypress", (event) => {
-    // console.log(event.keyCode);
-    // console.log("=".charCodeAt(0));
     let keyPressed = document.querySelector(`${'#btn' + event.keyCode}`);
-    console.log(event.key);
-   
-
     if(keyPressed) {
          keyPressed.click();
     }
@@ -50,7 +44,6 @@ function reset() {
     secondOperand = "";
     operator = "";
 }
-
 
 function renderUi(){
   
@@ -90,6 +83,7 @@ function renderUi(){
 function operate(num1, operator, num2) {
     let operand1 = Number(num1);
     let operand2 = Number(num2);
+    console.log(num1 + " " + operator +" "+ num2);
     switch(operator) {
         case "+" :
             console.log("+");
@@ -128,16 +122,17 @@ function deleteOneCharacter() {
 }
 
 function calculate() {
-    let result = operate(firstOperand, operator, secondOperand).toFixed(4);
+    let result = parseFloat(operate(firstOperand, operator, secondOperand).toFixed(4));
     reset();
     if (result) {
         displayScreen.textContent = result;
-        firstOperand = result;
     }
+    return result;
 }
 
 function wireEvents() {
     screenContols.addEventListener("click", (event)=>{
+        console.log("clicked clear/del");
         if( event.currentTarget == event.target) {
             return;
         }
@@ -149,11 +144,12 @@ function wireEvents() {
     });
 
     operatorsDiv.addEventListener("click" , (event)=> {
+        console.log("clicked operators");
         if( event.currentTarget == event.target) {
             return;
         }
         if(isSecondOperand) {
-            calculate();
+           firstOperand = calculate();
         }
     
         displayScreen.textContent = event.target.textContent;
@@ -165,6 +161,7 @@ function wireEvents() {
 
         
     numberDiv.addEventListener("click" , (event)=> {
+        console.log("clicked numbers");
         if( event.currentTarget == event.target) {
            return;
        }
@@ -182,7 +179,7 @@ function wireEvents() {
            }
            
            if(isSecondOperand) {
-                console.log("second operand");
+                // console.log("second operand");
                 secondOperand += event.target.textContent;
                 displayScreen.textContent = secondOperand;
            } else {
@@ -199,7 +196,6 @@ function start() {
     reset();
     renderUi();
     wireEvents();
-    console.log("click");
 }
 
 start();
