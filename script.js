@@ -10,6 +10,18 @@ var screenContols = document.querySelector(".eraser");
 var operatorsDiv = document.querySelector(".operators");
 var numberDiv = document.querySelector(".numbers");
 
+document.addEventListener("keypress", (event) => {
+    // console.log(event.keyCode);
+    // console.log("=".charCodeAt(0));
+    let keyPressed = document.querySelector(`${'#btn' + event.keyCode}`);
+    console.log(event.key);
+   
+
+    if(keyPressed) {
+         keyPressed.click();
+    }
+});
+
 function add(num1, num2) {
     return num1 + num2;
 }
@@ -24,14 +36,14 @@ function multiply(num1, num2) {
 
 function divide(num1, num2) {
     if (num2 == 0) {
-        alert("second number cannot be ZERO");
-        return "OOPS wrong input";
+        alert("Divisor cannot be ZERO");
+        return "OOPS";
     }
     return num1 / num2;
 }
 
 function reset() {
-    displayScreen.textContent = "0";
+    displayScreen.textContent = "";
     isSecondOperand = false;
     isDecimalPlaceAllowed = true;
     firstOperand = "";
@@ -55,16 +67,18 @@ function renderUi(){
 
     operatorArr.map(element => {
         let button = document.createElement("button");
+        button.id = "btn" + element.charCodeAt(0);
         button.textContent = element;
         operatorsDiv.appendChild(button);
     });
 
     // Numbers, decimal symbol and Equals operator
-    let numArr = [1,2,3,4,5,6,7,8,9,".", 0,"="];
+    let numArr = ["1","2","3","4","5","6","7","8","9",".", "0","="];
 
     numArr.map(element => {
         let button = document.createElement("button");
         button.textContent = element;
+        button.id = "btn" + element.charCodeAt(0);
         if (element == "=") {
             button.className = "blue";
         }
@@ -74,8 +88,8 @@ function renderUi(){
 }
 
 function operate(num1, operator, num2) {
-    let operand1 = parseFloat(num1);
-    let operand2 = parseFloat(num2);
+    let operand1 = Number(num1);
+    let operand2 = Number(num2);
     switch(operator) {
         case "+" :
             console.log("+");
@@ -95,6 +109,33 @@ function operate(num1, operator, num2) {
     }
 }
 
+
+function removeLastCharacter(str) {
+    return str.substring(0, str.length - 1);
+}
+
+function deleteOneCharacter() {
+    if(displayScreen.textContent === firstOperand) {
+        firstOperand = removeLastCharacter(firstOperand);
+        displayScreen.textContent = firstOperand;
+    } else if(displayScreen.textContent === operator) {
+        operator = removeLastCharacter(operator);
+        displayScreen.textContent = operator;
+    } else if(displayScreen.textContent === secondOperand) {
+        secondOperand = removeLastCharacter(secondOperand);
+        displayScreen.textContent = secondOperand;
+    }
+}
+
+function calculate() {
+    let result = operate(firstOperand, operator, secondOperand).toFixed(4);
+    reset();
+    if (result) {
+        displayScreen.textContent = result;
+        firstOperand = result;
+    }
+}
+
 function wireEvents() {
     screenContols.addEventListener("click", (event)=>{
         if( event.currentTarget == event.target) {
@@ -102,13 +143,17 @@ function wireEvents() {
         }
         if (event.target.textContent === "Clear") {
            reset();
+        } else if(event.target.textContent === "Del") {
+            deleteOneCharacter();
         }
-        
     });
 
     operatorsDiv.addEventListener("click" , (event)=> {
         if( event.currentTarget == event.target) {
             return;
+        }
+        if(isSecondOperand) {
+            calculate();
         }
     
         displayScreen.textContent = event.target.textContent;
@@ -125,16 +170,10 @@ function wireEvents() {
        }
 
        if( event.target.textContent === "=") {
-            console.log("first => " + firstOperand);
-            console.log("Operator => " + operator);
-            console.log("second => " + secondOperand);
-            let result = operate(firstOperand, operator, secondOperand);
-            reset();
-            displayScreen.textContent = result;
-
-           
-       } else {
-           if (event.target.textContent == ".") {
+            calculate();
+       } else { 
+        // decimal points
+        if (event.target.textContent == ".") {
                if (!isDecimalPlaceAllowed) {
                    console.log("can allow only one decimal place")
                    return;
@@ -151,9 +190,6 @@ function wireEvents() {
                 displayScreen.textContent = firstOperand;
            }
        }
-
-
-      
    });
 }
 
@@ -163,6 +199,7 @@ function start() {
     reset();
     renderUi();
     wireEvents();
+    console.log("click");
 }
 
 start();
